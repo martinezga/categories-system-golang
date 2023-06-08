@@ -2,33 +2,24 @@ package handlers
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/martinezga/categories-system-golang/api/v1/services/categories"
+	"github.com/martinezga/categories-system-golang/api/v1/services"
 )
 
 type resource struct {
-	service *categories.CategoryService
+	service services.Service
 }
 
 // RegisterHandlers sets up the routing of the HTTP handlers
-func RegisterHandlers(router *gin.Engine, service *categories.CategoryService) {
+func RegisterHandlers(router *gin.Engine, service services.Service) {
 	res := resource{service}
 
-	router.GET("/v1/categories/:id", res.GetCategoryHandler)
+	router.GET("/v1/category/:id", res.GetCategoryHandler)
 }
 
 func (r resource) GetCategoryHandler(c *gin.Context) {
 	id := c.Param("id")
-	category, err := r.service.Get(id)
-
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "not found",
-		})
-		return
-	}
-
+	category := r.service.GetCategoryService(id)
 	c.JSON(http.StatusOK, gin.H{
 		"data": category,
 	})
