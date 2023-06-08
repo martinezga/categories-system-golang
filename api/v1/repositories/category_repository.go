@@ -1,27 +1,25 @@
 package repositories
 
 import (
-	"fmt"
-
 	"github.com/martinezga/categories-system-golang/api/v1/models"
+	"gorm.io/gorm"
 )
 
 type Repository interface {
-	GetCategoryRepository(id string) models.CategoryModel
+	GetCategoryRepository(id string) (models.CategoryModel, error)
 }
 
 type repository struct {
-	// TODO: db
+	db *gorm.DB
 }
 
-func NewRepository() Repository {
-	return repository{}
+func NewRepository(db *gorm.DB) Repository {
+	return repository{db}
 }
 
-func (r repository) GetCategoryRepository(id string) models.CategoryModel {
+func (r repository) GetCategoryRepository(id string) (models.CategoryModel, error) {
 	var category models.CategoryModel
-	category = models.CategoryModel{}
-	category.Name = fmt.Sprintf("Category %s", id)
+	err := r.db.First(&category, models.CategoryModel{ID: id}).Error
 
-	return category
+	return category, err
 }
