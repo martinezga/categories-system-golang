@@ -2,17 +2,22 @@ package main
 
 import (
 	"log"
+
 	"github.com/martinezga/categories-system-golang/api"
 	"github.com/martinezga/categories-system-golang/config"
+	"github.com/martinezga/categories-system-golang/pkg/db"
+	"gorm.io/gorm"
 )
 
 type App struct {
 	Config config.Environment
+	Db     *gorm.DB
 }
 
-func NewApp(config config.Environment) *App {
+func NewApp(config config.Environment, db *gorm.DB) *App {
 	return &App{
 		Config: config,
+		Db:     db,
 	}
 }
 
@@ -21,7 +26,7 @@ func (app *App) Run() error {
 
 	log.Print("Appp is running...")
 
-	api.ServeApi()
+	api.ServeApi(app.Db)
 
 	// Clean up or close connections
 
@@ -32,9 +37,10 @@ func (app *App) Run() error {
 func main() {
 	env := config.LoadEnvironment()
 	// connect to the database
+	DB := db.Init(env.DatabaseURL)
 
 	// build HTTP server
-	app := NewApp(env)
+	app := NewApp(env, DB)
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
 	}
