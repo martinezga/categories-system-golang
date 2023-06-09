@@ -27,3 +27,6 @@ tools:  ## Install dev-tools
 
 lint:  ## Run lint tools
 	@$(GOLANGCILINT) run
+
+swagger:
+	swag init -generalInfo api/api.go -output ./docs/swagger
