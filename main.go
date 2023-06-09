@@ -26,7 +26,7 @@ func (app *App) Run() error {
 
 	log.Print("Appp is running...")
 
-	api.ServeApi(app.Db)
+	api.ServeApi(app.Config, app.Db)
 
 	// Clean up or close connections
 
