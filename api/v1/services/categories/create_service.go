@@ -6,16 +6,16 @@ import (
 	"github.com/martinezga/categories-system-golang/api/v1/repositories"
 )
 
-type GetService struct {
+type CreateService struct {
 	repo repositories.Repository
 }
 
-func NewGetService(repo repositories.Repository) *GetService {
-	return &GetService{repo: repo}
+func NewCreateService(repo repositories.Repository) *CreateService {
+	return &CreateService{repo: repo}
 }
 
-func (s *GetService) GetCategory(id string) (dtos.CategoryResponse, error) {
-	category, err := s.repo.GetCategoryRepository(id)
+func (s *CreateService) CreateCategory(data dtos.CategoryCreateRequest) (dtos.CategoryResponse, error) {
+	category, err := s.repo.CreateCategoryRepository(data)
 
 	if err != nil {
 		return dtos.CategoryResponse{}, err
